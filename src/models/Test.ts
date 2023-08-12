@@ -23,3 +23,5 @@ const testSchema = new mongoose.Schema<Test>({
     required: true,
   }
 });
+
+export default mongoose.model<Test>("Test", testSchema);
