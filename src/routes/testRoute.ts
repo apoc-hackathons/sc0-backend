@@ -1,7 +1,9 @@
 import express, { Application, Request, Response } from 'express';
 import Test from '../models/Test';
 import { body, validationResult } from 'express-validator';
-
+import * as fs from 'fs-extra';
+const jsonString = fs.readFileSync('question_DataSet.json', 'utf-8');
+const jsonData = JSON.parse(jsonString);
 const router = express.Router();
 
 const validateTest = [
@@ -17,14 +19,17 @@ router.post("/testcheck", express.json(), validateTest, async (req: Request, res
 
     const {questionId, option} = req.body;
     try {
-      const ans = await Test.findOne({ _id: questionId });
-      if(!ans) {
-        return res.status(400).send({ error: 'Question not found' });
-      }
-      if(ans.correctAns !== option) {
-        return res.status(418).send({status:"wrong", correctIndex: ans.correctAns });
-      }
-        res.json({status:"correct",correctIndex: ans.correctAns }).status(200);
+      const ans = await jsonData.forEach((item:any) => {
+        if(item._id === questionId) {
+          if(item.answer === option){
+            res.json({status:"correct",correctIndex: ans.correctAns }).status(200);
+          }else{
+            res.json({status:"incorrect",correctIndex: ans.correctAns }).status(200);
+          }
+        }else{
+            res.send("Question not found").status(404);
+        }
+      })
     } catch(err) {
       console.error(err);
       res.status(500).send({ error: 'An error occurred' });
