@@ -1,14 +1,9 @@
+const express = require('express');
+const app = express();
+app.use(express.json());
+
 import * as fs from 'fs-extra';
-import {
-    atan2, chain, derivative, e, evaluate, log, pi, pow, round, sqrt
-  } from 'mathjs';
-  const dummy_user = {
-    name: "Arya",
-    email: "aryaworrior41@gmail.com",
-    role: "student",
-    
-    
-  }
+
   function randomIntFromInterval(min:number, max:number) { // min and max included 
     return Math.floor(Math.random() * (max - min + 1) + min)
   }
@@ -56,24 +51,17 @@ class WeightedRandomNumberGenerator {
     }
   }
   
-
-  
-  
-
+function test(response: any, res:any){
+  let e;
 try {
     const jsonString = fs.readFileSync('question_DataSet.json', 'utf-8');
     const jsonData = JSON.parse(jsonString);
     let topics: any = [];
     let qs:any = []
     let topicIds: any = [];
-    let temp_topics: any = [];
     let a: number = 0;
-    let response = ["hard_8","easy_10","easy_13","hard_17"];
-
-    interface ids{
-        
-        
-    }
+  let questions:any = [];
+    //let response = ["hard_8","easy_10","easy_13","hard_17"];
 
     //console.log(Object.keys(jsonData.physics))
     jsonData.physics.forEach((j: any) =>{
@@ -87,10 +75,13 @@ try {
     });
     jsonData.physics.forEach((k: any) => {
         let obj = {
-            _id: k._id,
+           _id: k._id,
             subject_name: "physics",
             topic_name: k.topic,
-            priority: priorityCalculator(k.difficulty)
+            priority: priorityCalculator(k.difficulty),
+            question: k.question,
+            correctAns: k.options.indexOf(k.answer),
+            answers: k.options
         }
         qs.push(obj)
     });
@@ -101,9 +92,6 @@ try {
             topicIds[j.topic].push(j._id);
         }
     });
-
-
-
     qs.forEach((e:any) => {
         if(response.includes(e._id)){
             topics.map((obj:any)  =>{
@@ -134,63 +122,61 @@ try {
         })
       } catch(err){
       }
-      //console.log(weightedNumbers);
-
-        
-      
-    
-     ` for(let i = 0; i < topics.length; i++){
-        console.log(i+ ", " + topics[i])
-            ;        
-      };`
 
        const generator = new WeightedRandomNumberGenerator(weightedNumbers);
-       
-      // rand(generator);
-       //console.log(topics[rand(generator)].topic)
-       console.log(topicIds[topics[rand(generator)].topic][randomIntFromInterval(0, topics.length-1)])
-      // console.log(topicIds) //
 
+      // console.log(topicIds[topics[rand(generator)].topic][randomIntFromInterval(0, topics.length-1)])
 
+  function gen_question(){
+    qs.map((e:any) => {   
+        if(e._id == topicIds[topics[rand(generator)].topic][randomIntFromInterval(0, topics.length-1)]){
+             //res.send(e)
+          questions.push(e)
+        }
+      })
+  }
+  gen_question();
+  gen_question();
+  gen_question();
+  gen_question();
+  gen_question();
+  gen_question();
+  gen_question();
+  gen_question();
+  gen_question();
+  gen_question();
+  gen_question();
 
-    //console.log(topics)
-    //console.log(qs);
-     
-    
+  questions = questions.filter((value:any, index:any) => {
+        const _value = JSON.stringify(value);
+        return index === questions.findIndex((obj:any) => {
+          return JSON.stringify(obj) === _value;
+        });
+      });
+  //console.log(questions.length)
+  while(questions.length < 10){
+    gen_question();    
+  }
 
-
-
-    //console.log(topics)
-
-
-
-    //insert quiz here
-
-    interface Subject {
-        subject_name: string;
-        marks: number;
-    }
-
-   // let objIndex = topics.findIndex((obj: any) => obj.subject_name == "optics");
-    //topics[objIndex].marks = 50;
-
-    // topics.sort((a: Subject, b: Subject) => b.marks - a.marks);
-
-
-    // topics.forEach((k: any) => {
-    //     if (k.marks <= 50) {
-    //         fails.push(k)
-    //     }
-    // });
-
-    "marks/10 "
-
-    //console.log(fails)
+  res.send(questions)
 } catch (err) {
     console.error(err);
 }
+}
 
-//easy: 2
-//medium: 1
-//hard: 0.5
-//very hard: 0.25
+app.post('/test', async (req:any, res:any) => {
+  const { response } = req.body;
+
+  try {
+    
+    console.log(test(response, res))
+    res.status(200);
+  } catch (error) {
+    console.error('Error creating product:', error);
+    res.status(500).json({ error: 'Failed to create product' });
+  }
+});
+
+app.listen(3000, () => {
+  console.log('Server listening on port 3000');
+});
