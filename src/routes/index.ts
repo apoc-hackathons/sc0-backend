@@ -1,5 +1,6 @@
 import express, { Application, Request, Response } from 'express';
 import User from '../models/User';
+import testRouter from './testRoute';
 import { body, validationResult } from 'express-validator';
 
 const router = express.Router();
@@ -35,4 +36,5 @@ router.post("/login", express.json(), validateUser, async (req: Request, res: Re
   }
 });
 
+router.post("/test", testRouter)
 export default router;

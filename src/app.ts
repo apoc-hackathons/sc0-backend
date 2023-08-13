@@ -1,13 +1,11 @@
 import express, { Application, Request, Response } from "express";
+import router from "./routes";
 const app: Application = express();
-
 const PORT: number = 3001;
-
 require("dotenv").config();
 const mongoose = require("mongoose");
-
 const uri = process.env.DATABASE_URL;
-
+app.use(router)
 const run = async () => {
   await mongoose.connect(uri, {
     useNewUrlParser: true,

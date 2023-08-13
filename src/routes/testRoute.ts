@@ -27,3 +27,5 @@ router.post("/testcheck", express.json(), validateTest, async (req: Request, res
       res.status(500).send({ error: 'An error occurred' });
     }
 });
+
+export default router;
