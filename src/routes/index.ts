@@ -2,7 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import User from '../models/User';
 import testRouter from './testRoute';
 import { body, validationResult } from 'express-validator';
-
+import submitRouter from './submitRoute';
 const router = express.Router();
 
 const validateUser = [
@@ -37,4 +37,6 @@ router.post("/login", express.json(), validateUser, async (req: Request, res: Re
 });
 
 router.post("/test", testRouter)
+
+router.post("/form", submitRouter)
 export default router;

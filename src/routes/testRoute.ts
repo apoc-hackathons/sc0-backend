@@ -21,7 +21,10 @@ router.post("/testcheck", express.json(), validateTest, async (req: Request, res
       if(!ans) {
         return res.status(400).send({ error: 'Question not found' });
       }
-        res.json({correctIndex: ans.correctAns }).status(200);
+      if(ans.correctAns !== option) {
+        return res.status(418).send({status:"wrong", correctIndex: ans.correctAns });
+      }
+        res.json({status:"correct",correctIndex: ans.correctAns }).status(200);
     } catch(err) {
       console.error(err);
       res.status(500).send({ error: 'An error occurred' });

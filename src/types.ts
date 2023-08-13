@@ -25,3 +25,11 @@ export interface Test extends Document {
 interface Answers extends Document {
   content: string;
 }
+
+export interface Result extends Document {
+  user: ObjectId;
+  correctAns:[number];
+  checkedNum: number;
+  score: number;
+  fullScore: number;
+}
